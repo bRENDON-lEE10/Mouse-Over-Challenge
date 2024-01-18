@@ -5,87 +5,89 @@ cnv.width = 800;
 cnv.height = 600;
 
 // Global Variables
-let mouseX;
-let mouseY;
+let bx = 100;
+let by = 400;
+let bl = 100;
+let bw = 60;
 
-let blueRect = {
-    x: Math.random() * cnv.width,
-    y: Math.random() *cnv.height,
-    w: Math.random() * 30 +20,
-    h: Math.random() * 30 + 20,
-}
+let ox = 600;
+let oy = 400;
+let or = 50;
+
+// Request Animation Frame
+requestAnimationFrame(draw);
 
 // Call draw function once all pages resources have loaded
 window.addEventListener("load", draw);
 
 function draw() {
-        // LOGIC
-        if (ptInRect(mouseX, mouseY, 50,50,200,80)){
-            document.body.style.backroundColor = "red";
-        }else if (ptInRect(mouseX, mouseY,600,100,50,0,2* Math.PI )){
-            document.body.style.backroundColor = "green";
-        }else if (ptInRect(mouseX, mouseY,600,450,50,0,2* Math.PI )){
-            document.body.style.backroundColor = "orange";
-        }
-        
-        if(ptInRect(mouseX,mouseY,blueRect.x,blueRect.y,blueRect.w,blueRect.h)){
-            document.body.style.backroundcolor ="blue"
-            blueRect = {
-                x: Math.random() * cnv.width,
-                y: Math.random() *cnv.height,
-                w: Math.random() * 30 +20,
-                h: Math.random() * 30 + 20,
-            }
-        }
+  // Draw Filled Rectangle
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, 800, 600);
 
-// Draw Filled Rectangle
-ctx.clearRect(0,0,cnv.width,cnv.height);
+  ctx.fillStyle = "red";
+  ctx.fillRect(100, 50, 100, 60);
 
-ctx.fillStyle = "red";
-ctx.fillRect (100,50,100,60);
+  ctx.fillStyle = "blue";
+  ctx.fillRect(bx, by, bl, bw);
 
-ctx.fillStyle = "blue";
-ctx.fillRect (blueRect.x,blueRect.y, blueRect.w,blueRect.h);
+  // Draw Filled Circle
+  ctx.fillStyle = "green";
+  ctx.beginPath();
+  ctx.arc(600, 100, 50, 0, 2 * Math.PI);
+  ctx.fill();
 
-// Draw Filled Circle
-ctx.fillStyle = "green";
-ctx.beginPath();
-ctx.arc(600,100,50,0,2* Math.PI);
-ctx.fill();
+  ctx.fillStyle = "orange";
+  ctx.beginPath();
+  ctx.arc(ox, oy, or, 0, 2 * Math.PI);
+  ctx.fill();
 
-ctx.fillStyle = "orange";
-ctx.beginPath();
-ctx.arc(600,450,50,0,2* Math.PI);
-ctx.fill();
-
-// Redraw
-requestAnimationFrame(draw);
+  // Redraw
+  requestAnimationFrame(draw);
 }
 
 // Event Stuff
-document.addEventListener("mousemove",mousemoveHandler);
+document.addEventListener("mousemove", mousemoveHandler);
 
-function mousemoveHandler(e){
-    // Get Rectangle info about canvas location
-    letcnvRect = cnv.getBoundingClientRect();
+function mousemoveHandler(e) {
+  // Mouse Coordinates
+  const mx = e.clientX - cnv.offsetLeft;
+  const my = e.clientY - cnv.offsetTop;
 
-    // Calc mouse cordinates using mouse event and canvas location info
-    mouseX= Math.round(e.clientX - cnvRect.left);
-    mouseY = Math.round(e.clientY - cnvRect.top);
+  // Variables for Moving Shapes
+  let bxx = bx + bl;
+  let byy = by + bw;
+
+  // Green Circle Distance
+  let ag = mx - 600;
+  let bg = my - 100;
+  let cg = Math.sqrt(ag * ag + bg * bg);
+
+  // Orange Circle Distance
+  let ao = mx - ox;
+  let bo = my - oy;
+  let co = Math.sqrt(ao * ao + bo * bo);
+
+  // If Statement
+  if (mx > 75 && mx < 215 && my > 100 && my < 150) {
+    document.body.style.backgroundColor = "red";
+  } else if (mx > bx && mx < bxx && my > by && my < byy) {
+    document.body.style.backgroundColor = "blue";
+    bx = Math.floor(Math.random() * 399) + 1;
+    by = Math.floor(Math.random() * 399) + 1;
+    bl = Math.floor(Math.random() * 99) + 1;
+    bw = Math.floor(Math.random() * 99) + 1;
+  } else if (cg < 26) {
+    document.body.style.backgroundColor = "green";
+  } else if (co < or) {
+    document.body.style.backgroundColor = "orange";
+    or = Math.floor(Math.random() * 99) + 1;
+    ox = Math.floor(Math.random() * 499) + 1;
+    oy = Math.floor(Math.random() * 499) + 1;
+  }
 }
 
-// Helper Function
-
-// Test if a point is in a rectangle
-function ptInRect(x1,y1,x,y,w,h){
-    if (x1 > x && x1< x + w && y1> y && y1 < y+h){
-        return true;
-    }else{
-        return false;
-    }
-
-}
-
+requestAnimationFrame(draw);
 
 
 
